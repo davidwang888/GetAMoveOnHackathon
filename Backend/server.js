@@ -13,6 +13,9 @@ let db = new Database(config.mysql);
 
 let app = express();
 
+let noLogin = ['/index.html'];
+let pages = ['/index.html', '/page.html', 'profile.html', 'select_items.html', 'setup.html']
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
 
@@ -31,11 +34,17 @@ app.get('*', function(req, res) {
 
     if (url === '/') url = '/index.html';
 
+    if (req.session.userID >= 0) {
+        if (url == '/index.html') return res.redirect(config.sepChar + config.page.homePage)
+    } else {
+        if (pages.includes(url)) url = '/index.html';
+
+    }
+
     let reqPath = __dirname + config.sepChar + 'public' + url;
 
     if (!fs.existsSync(reqPath)) {
-        if( url.endsWith('.html')) return res.redirect('/' + config.errPage);
-        else return res.send('');
+        return res.redirect(config.sepChar + config.page.errPage);
     }
 
     res.sendFile(reqPath);
