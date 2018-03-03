@@ -4,46 +4,59 @@
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="utilities.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .centerme {
+            text-align: center;
+        }
+
+        .title {
+            font-size: 30px;
+        }
+    </style>
 </head>
 
 <body>
 <form action="/preset/add" method="post">
-    <input id="presetName" type="hidden" name="presetName" value=""/>
+    <input type="hidden" name="presetID" value="" id="presetID"/>
     <div class="col-xs-12 col-md-12 container">
         <div cass="col-xs-12 col-md-10 col-md-offset-2 inner">
-            <p>What items do you have around you?</p>
+            <div class="centerme">
+                <div class="title">Name your Saved Location</div>
+                <div class="inp"><input id="presetnameinp" type="text" name="presetName"/></div>
+            </div><br>
+            <div class="centerme" style="font-size: 20px;">What items do you have around you?</div>
             <!-- Category List -->
             <div id="accordion"></div>
             <input type="submit" class="btn btn-outline-primary btn-block" value="See Workout Routines"/><br>
-            <input id="savepresetbtn" onclick="savePreset()" type="button" class="btn btn-outline-primary btn-block" value="Save Preset"/>
         </div>
     </div>
 </form>
 
 
-    <script>
-
-        function savePreset() {
-            let presetName = prompt("Name your preset");
-
-            if (!presetName || presetName.length === 0) return;
-
-            $('#presetName').val(presetName);
-            $('#savepresetbtn').css('display', 'none');
-        }
+<script>
 
     let tmpPreset = serverData.tmpPreset;
-    if (!tmpPreset) tmpPreset = {id: -1, items: []};
+    if (!tmpPreset) tmpPreset = {id: -1, items: [], name: ''};
     let selItems = [];
     for (let i = 0; i < tmpPreset.items.length; i++) {
         selItems.push(tmpPreset.items[i].id);
     }
-    
+
+    $('#presetnameinp').val(tmpPreset.name);
+    $('#presetID').val(tmpPreset.id);
+
     let categories = serverData.categories;
     let strCombine = "";
     let strButton = "";
@@ -53,8 +66,7 @@
 
     let cardTopTemplate = '<div class="card"><div class="card-header" id="%HEADING%"><h5 class="mb-0"><button class="%BUTTON%" data-toggle="collapse" data-target="#%ID%" aria-expanded="true" aria-controls="%ID%">%NAME%</button></h5></div>';
 
-    let cardBodTemplate ='<div id="%ID%" class="%COLLAPSE%" aria-labelledby="%HEADING%" data-parent="#accordion"><div class="card-body"><p>%ITEMS%</p></div></div></div>';
-
+    let cardBodTemplate = '<div id="%ID%" class="%COLLAPSE%" aria-labelledby="%HEADING%" data-parent="#accordion"><div class="card-body"><p>%ITEMS%</p></div></div></div>';
 
     let checkboxTemplate = '<div class="form-check"><input type="checkbox" value="" name="%NAME%"%CHECKED%/><label class="form-check-label" for="defaultCheck1">%LABEL%</label></div>'
 
@@ -63,7 +75,6 @@
 
         // //Get list of items from Categories        
         let items = categories[i].items;
-        console.log(items);
 
         for (var u = 0; u < items.length; u++) {
             //Add items into a collapsible
