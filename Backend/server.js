@@ -1,20 +1,25 @@
 let express = require('express');
 let http = require('http');
+let bodyParser = require('body-parser');
 let config = require('./config.json');
 let fs = require('fs');
 let Database = require('./database');
+
+//import routes
+let UserRouter = require('./routes/user');
 
 let db = new Database(config.mysql);
 
 let app = express();
 
-//setup routes
-app.get('/test', function (req, res) {
-    res.send(__dirname);
-});
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
+app.use('/user', new UserRouter(db).route());
+
+//setup routes
 app.get('*', function(req, res) {
-    let url = req.url;
+    let url = req.url.split('?')[0];
 
     if (url === '/') url = '/index.html';
 

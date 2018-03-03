@@ -1,12 +1,28 @@
-let router = require('express').Router();
+let express = require('express');
 
-router.post('/register', function (req, res) {
-    let body = req.body;
+class UserRouter {
 
-    let realname = body.realname;
-    let username = body.username;
-    let password = body.password;
-    let workoutCategory = body.workoutCategory;
-});
+    constructor(db) {
+        this.router = express.Router();
+        this.router.post('/register', function (req, res) {
+            let body = req.body;
 
-module.exports = router;
+            let realname = body.realname;
+            let username = body.username;
+            let password = body.password;
+            let workoutCategory = body.workoutCategory;
+
+            db.registerUser(realname, username, password, workoutCategory, function (msg) {
+                res.redirect('/index.html?msg=' + msg);
+            });
+        });
+    }
+
+    route() {
+        return this.router;
+    }
+}
+
+
+
+module.exports = UserRouter;
