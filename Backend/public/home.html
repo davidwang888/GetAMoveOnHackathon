@@ -8,6 +8,38 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
     <script src="utilities.js"></script>
+    <style>
+        .loc {
+            height: 50px;
+            border-radius: 10px;
+            display: table;
+            text-align: center;
+            width: 100%;
+            cursor: default;
+            background-color: lightblue;
+            margin-bottom: 5px;
+        }
+
+        .loc:hover {
+            background-color: lightcoral;
+        }
+
+        .tcell {
+            display: table-cell;
+            vertical-align: middle;
+            width: 100%;
+        }
+
+        .hideme {
+            display: none;
+        }
+
+        .delbtn {
+            position: absolute;
+            top: 10px;
+            right: 5px;
+        }
+    </style>
 </head>
 <body>
 
@@ -29,7 +61,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Account <span class="caret"></span></a>
                     <ul class="dropdown-menu">
                         <li><a href="./profile.html">Profile</a></li>
-                        <li><a href="#">Logout</a></li>
+                        <li><a href="/logout">Logout</a></li>
                     </ul>
                 </li>
             </ul>
@@ -38,27 +70,35 @@
     </div>
 </nav>
 <div class="container">
-    <h1>Welcome T'Challa!</h1>
+    <h1>Welcome <span class="realname"></span></h1>
     <div class="row">
-        <div class="col-md-12 col-xs-6">
-            <h3>Where are you?<br/><br/>
-                <div id="main"></div>
-                <a href="/newitems">New Location</a>
-            </h3>
+        <div class="col-md-12">
+            <h3>Are you at one of your saved locations?</h3>
+            <div id="savedlocs">
+                <br><br><div class="loc"><span class="hideme pid"></span><div class="tcell">New Location</div></div>
+            </div>
         </div>
     </div>
 </div>
 <script>
+    $('.realname').html(serverData.user.name);
     let presets = serverData.presets;
 
     for (let i = 0; i < presets.length; i++) {
         let preset = presets[i];
-        let str = '<a href="/newitems?pid=' + preset.id + '">' + preset.name + '</a>' +
-            '<form action="/preset/delete" method="post" style="display: inline-block">' +
+
+        let str = '<div class="loc">' +
+            '<div class="tcell">' + preset.name + '<span class="hideme pid">' + preset.id + '</span></div>' +
+            '<div class="delbtn"><form action="/preset/delete" method="post">' +
             '<input type="hidden" name="presetID" value="' + preset.id + '"/>' +
-            '<input type="submit" value="Delete"/></form><br>';
-        $('#main').append(str);
+            '<input type="submit" value="X"/></form></div>' +
+            '</div>';
+        $('#savedlocs').prepend(str);
     }
+
+    $('.loc').click(function() {
+        window.location.href = '/newitems?pid=' + $(this).find('.pid').html();
+    });
 </script>
 </body>
 </html>

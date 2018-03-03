@@ -125,6 +125,14 @@ class Database {
         this.conn.query('DELETE FROM `preset` WHERE id=?', presetID);
     }
 
+    getUserDetails(userID, callback) {
+        this.conn.query('SELECT * FROM user WHERE id=?', userID, function (err, results) {
+            if (err) throw err;
+            if (results.length == 0) callback();
+            else callback(results[0]);
+        });
+    }
+
     getPresets(userID, callback) {
         let $this = this;
         this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
