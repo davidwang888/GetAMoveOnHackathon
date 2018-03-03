@@ -1,20 +1,20 @@
 let express = require('express');
 
-class PresetRouter {
+class RoutineRouter {
     constructor(db) {
         this.router = express.Router();
         this.router.post('/add', function(req, res) {
             let body = req.body;
-            let items = body.items;
-            db.addPreset(items);
+            let workouts = body.workouts;
+            db.addRoutine(workouts);
         });
 
         this.router.post('/delete', function(req, res) {
             let body = req.body;
-            let items = body.items;
-            db.deletePreset(items);
+            let workouts = body.workouts;
+            db.deleteRoutine(workouts);
         });
     }
 }
 
-module.exports = PresetRouter;
+module.exports = RoutineRouter;

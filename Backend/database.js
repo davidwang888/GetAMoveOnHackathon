@@ -78,11 +78,27 @@ class Database {
                 $this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
             }
         });
-
     }
 
-    deletePreset(presetID, callback) {
-        this.conn.query('DELETE FROM `preset` WHERE id=?', preset);
+    deletePreset(presetID) {
+        this.conn.query('DELETE FROM `preset` WHERE id=?', presetID);
+    }
+
+    addRoutine(workouts) {
+        let max = 0;
+        let $this = this;
+        this.conn.query('SELECT MAX(id) from workout', [], function(err, results, fields) {
+            if (err) throw err;
+            if (results.length > 0) max = results[0].id + 1;
+            else max = 0;
+            for (workout in workouts) {
+                $this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
+            }
+        });
+    }
+
+    deleteRoutine(presetID) {
+        this.conn.query('DELETE FROM `routine` WHERE id=?', presetID);
     }
 }
 
