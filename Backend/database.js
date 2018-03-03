@@ -91,7 +91,7 @@ class Database {
     }
 
     deletePreset(presetID) {
-        this.conn.query('DELETE FROM `user-preset` WHERE id=?', presetID);
+        this.conn.query('DELETE FROM `user-preset` WHERE presetID=?', presetID);
     }
 
     getPresets(userID, callback) {
@@ -116,8 +116,9 @@ class Database {
                 let arr = [];
                 for (let i = 0; i < results.length; i++) {
                     arr.push({
-                        presetID: results[i].presetID,
-                        itemIDs: itemIDs[i]
+                        id: results[i].presetID,
+                        name: results[i].name,
+                        items: itemIDs[i]
                     });
                 }
                 callback(arr);

@@ -27,6 +27,7 @@ app.use(session({
 }));
 
 app.use('/user', new UserRouter(db).route());
+app.use('/preset', new PresetRouter(db).route());
 
 function getCategoriesWithItems(callback) {
     db.getCategories(function (categories) {
