@@ -14,7 +14,7 @@ let db = new Database(config.mysql);
 
 let app = express();
 
-let noLogin = [config.page.indexPage, config.page.errPage];
+let noLogin = [config.page.indexPage, config.page.errPage, 'utilities.js'];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
