@@ -14,11 +14,11 @@ class PresetRouter {
 
             if (presetID != -1) {
                 db.editPresetWithName(userID, presetID, items, presetName, function () {
-                    res.redirect('/presets.html');
+                    res.redirect('/home.html');
                 });
             } else {
                 db.addPreset(userID, items, presetName, function () {
-                    res.redirect('/presets.html');
+                    res.redirect('/home.html');
                 });
             }
         });
@@ -38,7 +38,7 @@ class PresetRouter {
                     req.session.tmpPreset = preset;
                     res.redirect('/select_items.html');
                 } else {
-                    res.redirect('/presets.html?msg=Preset not found');
+                    res.redirect('/home.html?msg=Preset not found');
                 }
             });
         });
@@ -46,7 +46,7 @@ class PresetRouter {
             let body = req.body;
             let presetID = body.presetID;
             db.deletePreset(presetID);
-            res.redirect('/presets.html');
+            res.redirect('/home.html');
         });
     }
 
