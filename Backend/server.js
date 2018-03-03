@@ -49,13 +49,24 @@ function getCategoriesWithItems(callback) {
     });
 }
 
-function replaceContent(url, filePath, callback) {
+function replaceContent(url, filePath, session, callback) {
     fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) throw err;
         if (url === '/utilities.js') {
-            getCategoriesWithItems(function (categories) {
+            let proms = [];
+
+            proms.push(new Promise(function (resolve) {
+                getCategoriesWithItems(resolve);
+            }));
+
+            proms.push(new Promise(function (resolve) {
+                db.getPresets(session.userID, resolve);
+            }));
+
+            Promise.all(proms).then(function (arr) {
                 let serverData = JSON.stringify({
-                    categories: categories
+                    categories: arr[0],
+                    presets: arr[1]
                 });
                 let str = JSON.stringify(serverData);
                 data = data.replace(/%SERVERDATA%/g, str.substring(1, str.length - 1));
@@ -91,7 +102,7 @@ app.get('*', function(req, res) {
     }
 
     if (url === '/utilities.js') {
-        replaceContent(url, reqPath, function (cont) {
+        replaceContent(url, reqPath, req.session, function (cont) {
             res.send(cont);
         });
     } else {
