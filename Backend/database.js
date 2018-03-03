@@ -67,7 +67,7 @@ class Database {
         });
     }
 
-    addPreset(items) {
+    addPreset(userID, items, name) {
         let max = 0;
         let $this = this;
         this.conn.query('SELECT MAX(id) from routine', [], function(err, results, fields) {
@@ -77,28 +77,21 @@ class Database {
             for (item in items) {
                 $this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
             }
+            $this.conn.query('INSERT INTO `user-preset`(`userID`, `presetID`, `name`) VALUES (?,?)',[userID, max, name]);
         });
     }
 
-    deletePreset(presetID) {
-        this.conn.query('DELETE FROM `preset` WHERE id=?', presetID);
-    }
-
-    addRoutine(workouts) {
-        let max = 0;
-        let $this = this;
-        this.conn.query('SELECT MAX(id) from workout', [], function(err, results, fields) {
+    editPreset(userID, presetID, items) {
+        this.conn.query('DELETE FROM `preset` WHERE id=?', presetID, function (err) {
             if (err) throw err;
-            if (results.length > 0) max = results[0].id + 1;
-            else max = 0;
-            for (workout in workouts) {
-                $this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
+            for (item in items) {
+                this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
             }
         });
     }
 
-    deleteRoutine(presetID) {
-        this.conn.query('DELETE FROM `routine` WHERE id=?', presetID);
+    deletePreset(presetID) {
+        this.conn.query('DELETE FROM `user-preset` WHERE id=?', presetID);
     }
 
     getPresets(userID, callback) {
@@ -131,6 +124,63 @@ class Database {
             });
         });
     }
+
+    addRoutine(userID, workouts) {
+        let max = 0;
+        let $this = this;
+        this.conn.query('SELECT MAX(id) from workout', [], function(err, results, fields) {
+            if (err) throw err;
+            if (results.length > 0) max = results[0].id + 1;
+            else max = 0;
+            for (workout in workouts) {
+                $this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
+            }
+            $this.conn.query('INSERT INTO `user-preset`(`userID`, `presetID`) VALUES (?,?)',[userID, max]);
+        });
+    }
+
+    editRoutine(routineID, workouts) {
+        this.conn.query('DELETE FROM `user-routine` WHERE routineID=?', routineID, function() {
+            for (workout in workouts) {
+                this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
+            }
+        });
+    }
+
+    deleteRoutine(routineID) {
+        this.conn.query('DELETE FROM `user-routine` WHERE routineID=?', routineID);
+    }
+
+    // getRoutines(userID, callback) {
+    //     let $this = this;
+    //     this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
+    //         if (err) throw err;
+    //
+    //         let proms = [];
+    //
+    //         for (let i = 0; i < results.length; i++) {
+    //             const presetID = results[i].presetID;
+    //             proms.push(new Promise(function (resolve, reject) {
+    //                 $this.conn.query('SELECT i1.id, i1.name FROM preset p1 JOIN item i1 ON p1.itemID = i1.id WHERE p1.id=?', presetID, function (err, results) {
+    //                     if (err) throw err;
+    //
+    //                     resolve(results);
+    //                 });
+    //             }));
+    //         }
+    //
+    //         Promise.all(proms).then(function (itemIDs) {
+    //             let arr = [];
+    //             for (let i = 0; i < results.length; i++) {
+    //                 arr.push({
+    //                     presetID: results[i].presetID,
+    //                     itemIDs: itemIDs[i]
+    //                 });
+    //             }
+    //             callback(arr);
+    //         });
+    //     });
+    // }
 }
 
 module.exports = Database;
