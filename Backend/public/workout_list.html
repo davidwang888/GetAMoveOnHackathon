@@ -2,52 +2,51 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css"
+          integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js"
+            integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn"
+            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="style.css">
+    <script src="utilities.js"></script>
 </head>
 </head>
 <body>
 <div id="msg"></div>
 
 <div class="col-xs-12 col-md-12 container">
-<h1>Workouts</h1>
-<div class="col-xs-12 col-md-12 workoutlist"></div>
+    <h1>Workouts</h1>
+    <div class="col-xs-12 col-md-12 workoutlist"></div>
 </div>
-
-
-
-  
 
 <script>
 
-let workout = '<div class="card"><div class="card-block"><h3 class="card-title">%WORKOUT%</h3><p class="card-text">%DESCRIPTION%</p><a href="%VIDEOLINK%"class="btn btn-primary">Watch Demonstration</a></div></div>'
+    let workout = '<div class="card"><div class="card-block"><h3 class="card-title">%WORKOUT%</h3><p class="card-text">%DESCRIPTION%</p><a href="%VIDEOLINK%"class="btn btn-primary">Watch Demonstration</a></div></div>'
 
-let str="";
-let description="";
+    let str = "";
+    let description = "";
 
-for (var i = 0; i < 5; i++) {
-    let workouts = i;
+    for (var i = 0; i < 5; i++) {
+        let workouts = i;
 
-    for (var u = 0; u < 5; u++) {
-        //Add items into a collapsible
-        description = "equip quantity" + " " + "equip name";
+        for (var u = 0; u < 5; u++) {
+            //Add items into a collapsible
+            description = "equip quantity" + " " + "equip name";
+        }
+
+        let workString = workout.replace(/%WORKOUT%/g, 'WorkoutName').replace(/%DESCRIPTION%/g, description).replace(/%VIDEOLINK%/g, 'videolink');
+
+        str += workString;
+        vidLinks = "";
+
+        $(".workoutlist").html(str);
     }
-
-    let workString = workout.replace(/%WORKOUT%/g, 'WorkoutName').replace(/%DESCRIPTION%/g, description).replace(/%VIDEOLINK%/g, 'videolink');
-
-    str += workString;
-    vidLinks = "";
-
-    $(".workoutlist").html(str);
-}
-
-
-
-
-
 
 
 </script>
