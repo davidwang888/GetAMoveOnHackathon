@@ -22,6 +22,13 @@
     </div>
 
     <script>
+
+    let tmpPreset = serverData.tmpPreset;
+    if (!tmpPreset) tmpPreset = {id: -1, items: []};
+    let selItems = [];
+    for (let i = 0; i < tmpPreset.items.length; i++) {
+        selItems.push(tmpPreset.items[i].id);
+    }
     
     let categories = serverData.categories;
     let strCombine = "";
@@ -35,7 +42,7 @@
     let cardBodTemplate ='<div id="%ID%" class="%COLLAPSE%" aria-labelledby="%HEADING%" data-parent="#accordion"><div class="card-body"><p>%ITEMS%</p></div></div></div>';
 
 
-    let checkboxTemplate = '<div class="form-check"><input type="checkbox" value="" name="%NAME%"/><label class="form-check-label" for="defaultCheck1">%LABEL%</label></div>'
+    let checkboxTemplate = '<div class="form-check"><input type="checkbox" value="" name="%NAME%"%CHECKED%/><label class="form-check-label" for="defaultCheck1">%LABEL%</label></div>'
 
     for (var i = 0; i < categories.length; i++) {
         let cat = categories[i];
@@ -46,7 +53,9 @@
 
         for (var u = 0; u < items.length; u++) {
             //Add items into a collapsible
-            strItems += checkboxTemplate.replace(/%LABEL%/g, items[u].name).replace(/%NAME%/g, 'item' + items[u].id);
+            strItems += checkboxTemplate.replace(/%LABEL%/g, items[u].name)
+                .replace(/%NAME%/g, 'item' + items[u].id)
+                .replace(/%CHECKED%/g, selItems.includes(items[u].id) ? ' checked' : '');
         }
 
 

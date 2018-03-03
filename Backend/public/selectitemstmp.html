@@ -22,6 +22,13 @@ Select items
 </form>
 <script>
     let cats = serverData.categories;
+    let tmpPreset = serverData.tmpPreset;
+    if (!tmpPreset) tmpPreset = {id: -1, items: []};
+    let selItems = [];
+    for (let i = 0; i < tmpPreset.items.length; i++) {
+        selItems.push(tmpPreset.items[i].id);
+    }
+
     for (let i = 0; i < cats.length; i++) {
         let cat = cats[i];
         let str = '<div class="category"><div class="title">' + cat.name + '</div>';

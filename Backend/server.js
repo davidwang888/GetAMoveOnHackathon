@@ -67,7 +67,8 @@ function replaceContent(url, filePath, session, callback) {
             Promise.all(proms).then(function (arr) {
                 let serverData = JSON.stringify({
                     categories: arr[0],
-                    presets: arr[1]
+                    presets: arr[1],
+                    tmpPreset: session.tmpPreset
                 });
                 let str = JSON.stringify(serverData);
                 data = data.replace(/%SERVERDATA%/g, str.substring(1, str.length - 1));
