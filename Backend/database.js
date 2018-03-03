@@ -51,6 +51,12 @@ class Database {
         });
     }
 
+    getRigor(callback) {
+    this.conn.query('SELECT * FROM `workout_category`', function (err, results) {
+            callback(results);
+        });
+    }
+
     getCategories(callback) {
         this.conn.query('SELECT * FROM location_category', [], function(err, results, fields) {
             if (err) throw err;
@@ -70,7 +76,7 @@ class Database {
     addPreset(userID, items, name) {
         let max = 0;
         let $this = this;
-        this.conn.query('SELECT MAX(id) from routine', [], function(err, results, fields) {
+        this.conn.query('SELECT MAX(id) from preset', [], function(err, results, fields) {
             if (err) throw err;
             if (results.length > 0) max = results[0].id + 1;
             else max = 0;
@@ -82,11 +88,10 @@ class Database {
     }
 
     editPreset(userID, presetID, items) {
-        this.conn.query('DELETE FROM `preset` WHERE id=?', presetID, function (err) {
+        this.conn.query('SELECT `name` from preset WHERE id=?', presetID, function(err, results, fields) {
             if (err) throw err;
-            for (let item in items) {
-                this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
-            }
+            deletePreset(presetID);
+            addPreset(userID, items, results[0].name);
         });
     }
 
@@ -136,58 +141,50 @@ class Database {
             for (workout in workouts) {
                 $this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
             }
-            $this.conn.query('INSERT INTO `user-preset`(`userID`, `presetID`) VALUES (?,?)',[userID, max]);
+            $this.conn.query('INSERT INTO `user-routine`(`userID`, `workoutID`) VALUES (?,?)',[userID, max]);
         });
     }
 
     editRoutine(routineID, workouts) {
-        this.conn.query('DELETE FROM `user-routine` WHERE routineID=?', routineID, function() {
-            for (workout in workouts) {
-                this.conn.query('INSERT INTO `routine`(`id`, `workoutID`) VALUES (?,?)',[max, workout]);
-            }
-        });
+        deletePreset(routineID);
+        addPreset(userID, workouts);
     }
 
     deleteRoutine(routineID) {
-        this.conn.query('DELETE FROM `user-routine` WHERE routineID=?', routineID);
+        this.conn.query('DELETE FROM `routine` WHERE id=?', routineID);
     }
 
-    getRigor(callback) {
-        this.conn.query('SELECT * FROM `workout_category`', function (err, results) {
-            callback(results);
+    getRoutines(userID, callback) {
+        let $this = this;
+        this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
+            if (err) throw err;
+
+            let proms = [];
+
+            for (let i = 0; i < results.length; i++) {
+                const presetID = results[i].presetID;
+                proms.push(new Promise(function (resolve, reject) {
+                    $this.conn.query('SELECT i1.id, i1.name FROM preset p1 JOIN item i1 ON p1.itemID = i1.id WHERE p1.id=?', presetID, function (err, results) {
+                        if (err) throw err;
+
+                        resolve(results);
+                    });
+                }));
+            }
+
+            Promise.all(proms).then(function (itemIDs) {
+                let arr = [];
+                for (let i = 0; i < results.length; i++) {
+                    arr.push({
+                        id: results[i].presetID,
+                        name: results[i].name,
+                        items: itemIDs[i]
+                    });
+                }
+                callback(arr);
+            });
         });
     }
-
-    // getRoutines(userID, callback) {
-    //     let $this = this;
-    //     this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
-    //         if (err) throw err;
-    //
-    //         let proms = [];
-    //
-    //         for (let i = 0; i < results.length; i++) {
-    //             const presetID = results[i].presetID;
-    //             proms.push(new Promise(function (resolve, reject) {
-    //                 $this.conn.query('SELECT i1.id, i1.name FROM preset p1 JOIN item i1 ON p1.itemID = i1.id WHERE p1.id=?', presetID, function (err, results) {
-    //                     if (err) throw err;
-    //
-    //                     resolve(results);
-    //                 });
-    //             }));
-    //         }
-    //
-    //         Promise.all(proms).then(function (itemIDs) {
-    //             let arr = [];
-    //             for (let i = 0; i < results.length; i++) {
-    //                 arr.push({
-    //                     presetID: results[i].presetID,
-    //                     itemIDs: itemIDs[i]
-    //                 });
-    //             }
-    //             callback(arr);
-    //         });
-    //     });
-    // }
 }
 
 module.exports = Database;
