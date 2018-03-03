@@ -4,8 +4,20 @@
 <script src="utilities.js"></script>
 </head>
 <body>
+<div id="main"></div>
 <script>
-    alert(serverData.categories[1].name);
+
+    let htmlTemplate = '<div id="%ID%" class="collapse show" data-target="#%ID%">' +
+        '%CONTENT%</div>';
+
+    let cats = serverData.categories;
+
+    for (var i = 0; i < cats.length; i++) {
+        let cat = cats[i];
+        let str = htmlTemplate.replace(/%ID%/g, 'category' + cat.id)
+            .replace(/%CONTENT%/g, cat.name);
+        document.getElementById('main').innerHTML += str;
+    }
 </script>
 </body>
 </html>
