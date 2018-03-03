@@ -1,0 +1,45 @@
+<html>
+<head>
+    <script src="utilities.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <style>
+        .title {
+            font-weight: bold;
+        }
+
+        .item {
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+Select items
+<form method="post" action="/preset/temp">
+    <div id="main"></div>
+    <input id="presetName" type="hidden" name="presetName" value=""/>
+    <input type="submit" value="Show me the workouts"/>
+    <input id="savepresetbtn" type="button" value="Save preset" onclick="savePreset()"/>
+</form>
+<script>
+    let cats = serverData.categories;
+    for (let i = 0; i < cats.length; i++) {
+        let cat = cats[i];
+        let str = '<div class="category"><div class="title">' + cat.name + '</div>';
+        for (let j = 0; j < cat.items.length; j++) {
+            str += '<div class="item"><input type="checkbox" name="item' + cat.items[j].id + '">' + cat.items[j].name + '</div>';
+        }
+        str += '</div>';
+        $('#main').append(str);
+    }
+
+    function savePreset() {
+        let presetName = prompt("Name your preset");
+
+        if (!presetName || presetName.length === 0) return;
+
+        $('#presetName').val(presetName);
+        $('#savepresetbtn').css('display', 'none');
+    }
+</script>
+</body>
+</html>
