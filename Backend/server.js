@@ -91,6 +91,30 @@ app.get('/logout', function (req, res) {
     res.redirect(config.sepChar + config.page.indexPage);
 });
 
+app.get('/newitems', function (req, res) {
+    req.session.tmpPreset = null;
+    let presetID = parseInt(req.query.pid);
+    console.log(presetID);
+
+    let userID = req.session.userID;
+    if (!userID) {
+        return res.redirect('/index.html');
+    }
+
+    db.getPresets(userID, function (presets) {
+        let preset = null;
+        for (let i = 0; i < presets.length; i++) {
+            if (presets[i].id === presetID)preset = presets[i];
+        }
+        if (preset) {
+            req.session.tmpPreset = preset;
+        } else {
+            req.session.tmpPreset = null;
+        }
+        res.redirect('/select_items.html');
+    });
+});
+
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
 
