@@ -182,15 +182,15 @@ class Database {
 
     getRoutines(userID, callback) {
         let $this = this;
-        this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
+        this.conn.query('SELECT * FROM `user-routine` WHERE userID=?', userID, function (err, results) {
             if (err) throw err;
 
             let proms = [];
 
             for (let i = 0; i < results.length; i++) {
-                const presetID = results[i].presetID;
+                const routineID = results[i].routineID;
                 proms.push(new Promise(function (resolve, reject) {
-                    $this.conn.query('SELECT i1.id, i1.name FROM preset p1 JOIN item i1 ON p1.itemID = i1.id WHERE p1.id=?', presetID, function (err, results) {
+                    $this.conn.query('SELECT B.workoutID, A.name AS workoutName, B.numReps, B.secTime, B.categoryID AS difficulty FROM ( (SELECT w1.id, w1.name FROM workout w1 JOIN routine r1 ON w1.id = r1.workoutID WHERE r1.id=?) AS A JOIN  SELECT w2.workoutID, w2.numReps, w2.secTime, w2.categoryID FROM `workout-workout_category` w2 JOIN user u1 ON u1.categoryID = w2.categoryID WHERE u1.id = ?) AS B N A.id = B.workoutID )', [routineID, userID], function (err, results) {
                         if (err) throw err;
 
                         resolve(results);
@@ -198,13 +198,12 @@ class Database {
                 }));
             }
 
-            Promise.all(proms).then(function (itemIDs) {
+            Promise.all(proms).then(function (workoutIDs) {
                 let arr = [];
                 for (let i = 0; i < results.length; i++) {
                     arr.push({
-                        id: results[i].presetID,
-                        name: results[i].name,
-                        items: itemIDs[i]
+                        id: results[i].routineID,
+                        workouts: workoutIDs[i]
                     });
                 }
                 callback(arr);
