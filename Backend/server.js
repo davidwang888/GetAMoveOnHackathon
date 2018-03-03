@@ -28,6 +28,24 @@ app.use(session({
 
 app.use('/user', new UserRouter(db).route());
 
+function replaceContent(url, filePath, callback) {
+    fs.readFile(filePath, 'utf8', function (err, data) {
+        if (err) throw err;
+        if (url === '/utilities.js') {
+            db.getCategories(function (categories) {
+                let serverData = JSON.stringify({
+                    categories: categories
+                });
+                let str = JSON.stringify(serverData);
+                data = data.replace(/%SERVERDATA%/g, str.substring(1, str.length - 1));
+                callback(data);
+            });
+        } else {
+            callback(data);
+        }
+    });
+}
+
 //setup routes
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
@@ -47,7 +65,13 @@ app.get('*', function(req, res) {
         return res.redirect(config.sepChar + config.page.errPage);
     }
 
-    res.sendFile(reqPath);
+    if (url === '/utilities.js') {
+        replaceContent(url, reqPath, function (cont) {
+            res.send(cont);
+        });
+    } else {
+        res.sendFile(reqPath);
+    }
 });
 
 let httpServer = http.createServer(app);

@@ -50,6 +50,14 @@ class Database {
             }
         });
     }
+
+    getCategories(callback) {
+        this.conn.query('SELECT * FROM location_category', [], function(err, results, fields) {
+            if (err) throw err;
+
+            callback(results);
+        });
+    }
 }
 
 module.exports = Database;
