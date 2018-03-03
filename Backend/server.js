@@ -51,6 +51,8 @@ function getCategoriesWithItems(callback) {
 }
 
 function replaceContent(url, filePath, session, callback) {
+    let uid = session.userID;
+    if (!uid) uid = -1;
     fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) throw err;
         if (url === '/utilities.js') {
@@ -61,7 +63,7 @@ function replaceContent(url, filePath, session, callback) {
             }));
 
             proms.push(new Promise(function (resolve) {
-                db.getPresets(session.userID, resolve);
+                db.getPresets(uid, resolve);
             }));
 
             proms.push(new Promise(function (resolve) {
@@ -69,12 +71,12 @@ function replaceContent(url, filePath, session, callback) {
             }));
 
             proms.push(new Promise(function (resolve) {
-                db.getUserDetails(session.userID, resolve);
+                db.getUserDetails(uid, resolve);
             }));
 
             proms.push(new Promise(function (resolve) {
                 if (session.tmpPreset) {
-                    db.getUserDetails(session.userID, function (user) {
+                    db.getUserDetails(uid, function (user) {
                         let itemIDs = session.tmpPreset.items.map(item => item.id);
                         db.getWorkouts(itemIDs, user.categoryID, resolve);
                     });
@@ -135,7 +137,7 @@ app.get('/newitems', function (req, res) {
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
 
-    if (!req.session.userID) req.session.userID = 2;
+    //if (!req.session.userID) req.session.userID = 2;
 
     if (url === config.sepChar) url = config.sepChar + config.page.indexPage;
 
