@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "express": "latest"
+    "express": "latest",
+    "mysql": "^2.15.0"
   }
 }
