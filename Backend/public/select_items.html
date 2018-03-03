@@ -12,16 +12,30 @@
 </head>
 
 <body>
+<form action="/preset/add" method="post">
+    <input id="presetName" type="hidden" name="presetName" value=""/>
     <div class="col-xs-12 col-md-12 container">
         <div cass="col-xs-12 col-md-10 col-md-offset-2 inner">
             <p>What items do you have around you?</p>
             <!-- Category List -->
             <div id="accordion"></div>
-            <button type="button" class="btn btn-outline-primary btn-block">See Workout Routines</button>
+            <input type="submit" class="btn btn-outline-primary btn-block" value="See Workout Routines"/><br>
+            <input id="savepresetbtn" onclick="savePreset()" type="button" class="btn btn-outline-primary btn-block" value="Save Preset"/>
         </div>
     </div>
+</form>
+
 
     <script>
+
+        function savePreset() {
+            let presetName = prompt("Name your preset");
+
+            if (!presetName || presetName.length === 0) return;
+
+            $('#presetName').val(presetName);
+            $('#savepresetbtn').css('display', 'none');
+        }
 
     let tmpPreset = serverData.tmpPreset;
     if (!tmpPreset) tmpPreset = {id: -1, items: []};

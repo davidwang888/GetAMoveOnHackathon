@@ -6,10 +6,18 @@ class PresetRouter {
         this.router.post('/add', function(req, res) {
             let body = req.body;
             let userID = req.session.userID;
-            let items = body.items;
-            let name = body.name;
-            db.addPreset(userID, items, name);
-            res.redirect('/presets.html');
+            let presetName = body.presetName;
+            let items = Object.keys(body).filter(key => key.startsWith('item')).map(key => parseInt(key.substring(4)));
+
+          //  req.session.tmpPreset = items;
+
+            if (presetName.length > 0) {
+                db.addPreset(userID, items, presetName, function () {
+                    res.redirect('/presets.html');
+                });
+            } else {
+                res.redirect('/presets.html');
+            }
         });
         this.router.post('/edit', function(req, res) {
             let body = req.body;
@@ -18,8 +26,9 @@ class PresetRouter {
 
             let userID = req.session.userID;
             let presetID = body.presetID;
-            db.editPreset(userID, presetID, items);
-            res.redirect('/presets.html');
+            db.editPreset(userID, presetID, items, function () {
+                res.redirect('/presets.html');
+            });
         });
         this.router.post('/delete', function(req, res) {
             let body = req.body;

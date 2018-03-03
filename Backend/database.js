@@ -73,25 +73,47 @@ class Database {
         });
     }
 
-    addPreset(userID, items, name) {
-        let max = 0;
+    addPreset(userID, items, name, callback) {
         let $this = this;
         this.conn.query('SELECT MAX(id) from preset', [], function(err, results, fields) {
             if (err) throw err;
-            if (results.length > 0) max = results[0].id + 1;
-            else max = 0;
-            for (item in items) {
-                $this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
+            let max = results[0]['MAX(id)'];
+            if (!max) max = 0;
+            else max++;
+
+            let proms = [];
+
+            for (let i = 0; i < items.length; i++) {
+                let item = items[i];
+                proms.push(new Promise(function (resolve, reject) {
+                    $this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item], function (err) {
+                        if (err) throw err;
+                        resolve();
+                    });
+                }));
             }
-            $this.conn.query('INSERT INTO `user-preset`(`userID`, `presetID`, `name`) VALUES (?,?)',[userID, max, name]);
+
+            Promise.all(proms).then(function () {
+                $this.conn.query('INSERT INTO `user-preset`(`userID`, `presetID`, `name`) VALUES (?,?,?)',[userID, max, name], function (err) {
+                    if (err) throw err;
+                    if (callback) callback();
+                });
+            });
         });
     }
 
-    editPreset(userID, presetID, items) {
-        this.conn.query('SELECT `name` from preset WHERE id=?', presetID, function(err, results, fields) {
+    editPreset(userID, presetID, items, callback) {
+        let $this = this;
+
+        this.conn.query('SELECT `name` from `user-preset` WHERE presetID=?', presetID, function(err, results, fields) {
             if (err) throw err;
-            deletePreset(presetID);
-            addPreset(userID, items, results[0].name);
+
+            $this.deletePreset(presetID);
+            if (items.length > 0)
+                $this.addPreset(userID, items, results[0].name, callback);
+            else {
+                callback();
+            }
         });
     }
 
