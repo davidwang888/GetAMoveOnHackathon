@@ -17,7 +17,7 @@ class PresetRouter {
             let items = Object.keys(body).filter(key => key.startsWith('item')).map(key => parseInt(key.substring(4)));
 
             let userID = req.session.userID;
-            let presetID = req.presetID;
+            let presetID = body.presetID;
             db.editPreset(userID, presetID, items);
             res.redirect('/presets.html');
         });

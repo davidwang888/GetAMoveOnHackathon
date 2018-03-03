@@ -84,14 +84,14 @@ class Database {
     editPreset(userID, presetID, items) {
         this.conn.query('DELETE FROM `preset` WHERE id=?', presetID, function (err) {
             if (err) throw err;
-            for (item in items) {
+            for (let item in items) {
                 this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
             }
         });
     }
 
     deletePreset(presetID) {
-        this.conn.query('DELETE FROM `user-preset` WHERE presetID=?', presetID);
+        this.conn.query('DELETE FROM `preset` WHERE id=?', presetID);
     }
 
     getPresets(userID, callback) {
