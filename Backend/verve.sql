@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 03, 2018 at 12:57 PM
+-- Generation Time: Mar 03, 2018 at 06:39 PM
 -- Server version: 5.7.21-0ubuntu0.16.04.1
 -- PHP Version: 7.0.22-0ubuntu0.16.04.1
 
@@ -64,7 +64,6 @@ CREATE TABLE `location_category` (
   `id` int(11) NOT NULL,
   `name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
 -- --------------------------------------------------------
 
 --
@@ -101,15 +100,6 @@ CREATE TABLE `user` (
   `categoryID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
---
--- Dumping data for table `user`
---
-
-INSERT INTO `user` (`id`, `username`, `password`, `name`, `categoryID`) VALUES
-(2, 'bill', 'billpass', 'Bill', 1),
-(3, 'rcpooley', 'secret', 'Robert', 1),
-(4, 'dwang888', 'asdf', 'David Wang', 1);
-
 -- --------------------------------------------------------
 
 --
@@ -118,7 +108,8 @@ INSERT INTO `user` (`id`, `username`, `password`, `name`, `categoryID`) VALUES
 
 CREATE TABLE `user-preset` (
   `userID` int(11) NOT NULL,
-  `presetID` int(11) NOT NULL
+  `presetID` int(11) NOT NULL,
+  `name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -178,15 +169,6 @@ CREATE TABLE `workout_category` (
   `id` int(11) NOT NULL,
   `name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Dumping data for table `workout_category`
---
-
-INSERT INTO `workout_category` (`id`, `name`) VALUES
-(1, 'Beginner'),
-(2, 'Intermediate'),
-(3, 'Advanced');
 
 --
 -- Indexes for dumped tables
@@ -286,7 +268,7 @@ ALTER TABLE `workout_category`
 -- AUTO_INCREMENT for table `item`
 --
 ALTER TABLE `item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `item_category`
 --
@@ -296,12 +278,12 @@ ALTER TABLE `item_category`
 -- AUTO_INCREMENT for table `location_category`
 --
 ALTER TABLE `location_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 --
 -- AUTO_INCREMENT for table `workout`
 --
