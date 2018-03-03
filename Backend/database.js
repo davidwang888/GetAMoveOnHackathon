@@ -78,9 +78,9 @@ class Database {
         this.conn.query('SELECT MAX(id) from preset', [], function(err, results, fields) {
             if (err) throw err;
             let max = results[0]['MAX(id)'];
-            if (!max) max = 0;
+            if (max === 0) max = 1;
+            else if (!max) max = 0;
             else max++;
-
             let proms = [];
 
             for (let i = 0; i < items.length; i++) {
@@ -215,6 +215,63 @@ class Database {
                     });
                 }
                 callback(arr);
+            });
+        });
+    }
+
+    getItemCategories(itemIDs, callback) {
+        let proms = [];
+
+        let $this = this;
+
+        for (let i = 0; i < itemIDs.length; i++) {
+            proms.push(new Promise(function (resolve) {
+                $this.conn.query('SELECT * FROM `item-item_category` WHERE itemID=?', itemIDs[i], function (err, results) {
+                    if (err) throw err;
+                    if (results.length == 0) {
+                        resolve(-1);
+                    } else {
+                        resolve(results[0].categoryID);
+                    }
+                });
+            }));
+        }
+
+        Promise.all(proms).then(function (vals) {
+            callback(vals);
+        });
+    }
+
+    getWorkouts(itemIDs, difficulty, callback) {
+        let $this = this;
+
+        this.conn.query('SELECT w1.id, c1.numReps, c1.secTime, w1.name, w1.link FROM workout w1 JOIN `workout-workout_category` c1 ON w1.id=c1.workoutID WHERE c1.categoryID=?', difficulty, function (err, results) {
+            if (err) throw err;
+
+            let proms = [];
+
+            for (let i = 0; i < results.length; i++) {
+                const ww = results[i];
+                proms.push(new Promise(function (resolve) {
+                    $this.conn.query('SELECT * FROM `workout-item_category` WHERE workoutID=?', results[i].id, function (err, results) {
+                        if (err) throw err;
+                        ww.categoryID = results[0].categoryID;
+                        resolve(ww);
+                    });
+                }));
+            }
+
+            $this.getItemCategories(itemIDs, function (catIDs) {
+                Promise.all(proms).then(function (data) {
+                    let arr = [];
+                    for (let j = 0; j < data.length; j++) {
+                        let d = data[j];
+                        if (catIDs.includes(d.categoryID)) {
+                            arr.push(d);
+                        }
+                    }
+                    callback(arr);
+                });
             });
         });
     }

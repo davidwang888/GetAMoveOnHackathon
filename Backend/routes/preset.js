@@ -12,13 +12,21 @@ class PresetRouter {
             let presetName = body.presetName;
             let items = Object.keys(body).filter(key => key.startsWith('item')).map(key => parseInt(key.substring(4)));
 
+            let goo = function () {
+                if (presetID == -1) {
+                    res.redirect('/home.html');
+                } else {
+                    res.redirect('/workout_list.html');
+                }
+            };
+
             if (presetID != -1) {
                 db.editPresetWithName(userID, presetID, items, presetName, function () {
-                    res.redirect('/home.html');
+                    goo();
                 });
             } else {
                 db.addPreset(userID, items, presetName, function () {
-                    res.redirect('/home.html');
+                    goo();
                 });
             }
         });

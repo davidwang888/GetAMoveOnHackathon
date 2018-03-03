@@ -26,21 +26,18 @@
 </div>
 
 <script>
-
-    let workout = '<div class="card"><div class="card-block"><h3 class="card-title">%WORKOUT%</h3><p class="card-text">%DESCRIPTION%</p><a href="%VIDEOLINK%"class="btn btn-primary">Watch Demonstration</a></div></div>'
+    let workouts = serverData.workouts;
+    let workoutTemplate = '<div class="card"><div class="card-block"><h3 class="card-title">%WORKOUT%</h3><p class="card-text">%DESCRIPTION%</p><a href="%VIDEOLINK%" class="btn btn-primary" target="_blank">Watch Demonstration</a></div></div>'
 
     let str = "";
     let description = "";
 
-    for (var i = 0; i < 5; i++) {
-        let workouts = i;
+    for (var i = 0; i < workouts.length; i++) {
+        let workout = workouts[i];
 
-        for (var u = 0; u < 5; u++) {
-            //Add items into a collapsible
-            description = "equip quantity" + " " + "equip name";
-        }
+        description = workout.numReps + ' Reps; ' + workout.secTime + ' seconds';
 
-        let workString = workout.replace(/%WORKOUT%/g, 'WorkoutName').replace(/%DESCRIPTION%/g, description).replace(/%VIDEOLINK%/g, 'videolink');
+        let workString = workoutTemplate.replace(/%WORKOUT%/g, workout.name).replace(/%DESCRIPTION%/g, description).replace(/%VIDEOLINK%/g, workout.link);
 
         str += workString;
         vidLinks = "";

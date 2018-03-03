@@ -72,12 +72,24 @@ function replaceContent(url, filePath, session, callback) {
                 db.getUserDetails(session.userID, resolve);
             }));
 
+            proms.push(new Promise(function (resolve) {
+                if (session.tmpPreset) {
+                    db.getUserDetails(session.userID, function (user) {
+                        let itemIDs = session.tmpPreset.items.map(item => item.id);
+                        db.getWorkouts(itemIDs, user.categoryID, resolve);
+                    });
+                } else {
+                    resolve();
+                }
+            }));
+
             Promise.all(proms).then(function (arr) {
                 let serverData = JSON.stringify({
                     categories: arr[0],
                     presets: arr[1],
                     rigor: arr[2],
                     user: arr[3],
+                    workouts: arr[4],
                     tmpPreset: session.tmpPreset
                 });
                 let str = JSON.stringify(serverData);
