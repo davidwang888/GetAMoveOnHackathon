@@ -69,14 +69,16 @@ class Database {
 
     addPreset(items, callback) {
         let max = 0;
-        this.conn.query('SELECT MAX(id) from routine'), [], function(err, results, fields) {
+        let $this = this;
+        this.conn.query('SELECT MAX(id) from routine', [], function(err, results, fields) {
             if (err) throw err;
             if (results.length > 0) max = results[0].id + 1;
             else max = 0;
-        }
-        for (item in items) {
-            this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]));
-        }
+            for (item in items) {
+                $this.conn.query('INSERT INTO `preset`(`id`, `itemID`) VALUES (?,?)',[max, item]);
+            }
+        });
+
     }
 
     deletePreset(presetID, callback) {
