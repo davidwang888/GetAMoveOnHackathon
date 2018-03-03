@@ -27,11 +27,32 @@ app.use(session({
 
 app.use('/user', new UserRouter(db).route());
 
+function getCategoriesWithItems(callback) {
+    db.getCategories(function (categories) {
+        let proms = [];
+        for (let i = 0; i < categories.length; i++) {
+            const cat = categories[i];
+            proms.push(new Promise(function (resolve, reject) {
+                db.getItems(cat.id, function (items) {
+                    resolve(items);
+                });
+            }));
+        }
+
+        Promise.all(proms).then(function (items) {
+            for (let i = 0; i < categories.length; i++) {
+                categories[i].items = items[i];
+            }
+            callback(categories);
+        });
+    });
+}
+
 function replaceContent(url, filePath, callback) {
     fs.readFile(filePath, 'utf8', function (err, data) {
         if (err) throw err;
         if (url === '/utilities.js') {
-            db.getCategories(function (categories) {
+            getCategoriesWithItems(function (categories) {
                 let serverData = JSON.stringify({
                     categories: categories
                 });

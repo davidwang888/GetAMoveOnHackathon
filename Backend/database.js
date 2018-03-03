@@ -58,6 +58,14 @@ class Database {
             callback(results);
         });
     }
+
+    getItems(categoryID, callback) {
+        this.conn.query('SELECT * FROM item WHERE locationCategoryID=?', categoryID, function (err, results, fields) {
+            if (err) throw err;
+
+            callback(results);
+        });
+    }
 }
 
 module.exports = Database;
