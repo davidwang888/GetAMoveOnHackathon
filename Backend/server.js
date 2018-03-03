@@ -94,6 +94,8 @@ app.get('/logout', function (req, res) {
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
 
+    if (!req.session.userID) req.session.userID = 2;
+
     if (url === config.sepChar) url = config.sepChar + config.page.indexPage;
 
     let reqPath = __dirname + config.sepChar + 'public' + url;

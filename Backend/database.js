@@ -108,13 +108,17 @@ class Database {
         this.conn.query('SELECT `name` from `user-preset` WHERE presetID=?', presetID, function(err, results, fields) {
             if (err) throw err;
 
-            $this.deletePreset(presetID);
-            if (items.length > 0)
-                $this.addPreset(userID, items, results[0].name, callback);
-            else {
-                callback();
-            }
+            $this.editPresetWithName(userID, presetID, items, results[0].name, callback);
         });
+    }
+
+    editPresetWithName(userID, presetID, items, name, callback) {
+        this.deletePreset(presetID);
+        if (items.length > 0)
+            this.addPreset(userID, items, name, callback);
+        else {
+            callback();
+        }
     }
 
     deletePreset(presetID) {

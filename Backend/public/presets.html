@@ -21,16 +21,18 @@ Presets<br>
     for (let i = 0; i < presets.length; i++) {
         let preset = presets[i];
         let str = '<form action="/preset/edit" method="post">' +
-            '<input type="hidden" name="presetID" value="' + preset.id + '"/><div class="preset"><div class="title">' + preset.name + '</div>';
+            '<input type="hidden" name="presetID" value="' + preset.id + '"/>' +
+            '<div class="preset"><div class="title">' + preset.name + '</div>';
 
         for (let j = 0; j < preset.items.length; j++) {
             let item = preset.items[j];
-
-            str += '<div class="item"><input type="checkbox" name="item' + item.id + '" checked>' + item.name + '</div>';
+            str += '<div class="item">' + item.name + '</div>';
         }
 
-        str += '<input type="submit" value="Update"/></div></form>' +
-            '<form action="/preset/delete" method="post"><input type="hidden" name="presetID" value="' + preset.id + '"/><input type="submit" value="Delete"/></form>';
+        str += '<input type="submit" value="Edit"/></div></form>' +
+            '<form action="/preset/delete" method="post">' +
+            '<input type="hidden" name="presetID" value="' + preset.id + '"/>' +
+            '<input type="submit" value="Delete"/></form>';
         $('#main').append(str);
     }
 </script>
