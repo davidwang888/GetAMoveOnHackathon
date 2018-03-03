@@ -16,6 +16,19 @@ class UserRouter {
                 res.redirect('/index.html?msg=' + msg);
             });
         });
+        this.router.post('/login', function(req, res) {
+            let body = req.body;
+
+            let username = body.username;
+            let password = body.password;
+
+            db.loginUser(username, password,
+            function(msg, userID) {
+                req.session.userID = userID;
+                if (req.session.userID == -1)  res.redirect('/index.html?msg=' + msg);
+                else res.redirect('/home.html');
+            });
+        });
     }
 
     route() {
