@@ -8,6 +8,7 @@ let config = require('./config.json');
 
 //import routes
 let UserRouter = require('./routes/user');
+let PresetRouter = require('./routes/preset');
 
 let db = new Database(config.mysql);
 

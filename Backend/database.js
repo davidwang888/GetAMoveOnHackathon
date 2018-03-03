@@ -67,7 +67,7 @@ class Database {
         });
     }
 
-    addPreset(items, callback) {
+    addPreset(items) {
         let max = 0;
         let $this = this;
         this.conn.query('SELECT MAX(id) from routine', [], function(err, results, fields) {
