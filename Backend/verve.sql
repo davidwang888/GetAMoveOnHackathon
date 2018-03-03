@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 03, 2018 at 05:28 AM
+-- Generation Time: Mar 03, 2018 at 12:57 PM
 -- Server version: 5.7.21-0ubuntu0.16.04.1
 -- PHP Version: 7.0.22-0ubuntu0.16.04.1
 
@@ -57,24 +57,12 @@ CREATE TABLE `item_category` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `location`
---
-
-CREATE TABLE `location` (
-  `id` int(11) NOT NULL,
-  `name` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `location_category`
 --
 
 CREATE TABLE `location_category` (
   `id` int(11) NOT NULL,
-  `name` varchar(256) NOT NULL,
-  `locationID` int(11) NOT NULL
+  `name` varchar(256) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -108,8 +96,19 @@ CREATE TABLE `routine` (
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `username` varchar(30) NOT NULL,
-  `password` varchar(256) NOT NULL
+  `password` varchar(256) NOT NULL,
+  `name` varchar(30) NOT NULL,
+  `categoryID` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `username`, `password`, `name`, `categoryID`) VALUES
+(2, 'bill', 'billpass', 'Bill', 1),
+(3, 'rcpooley', 'secret', 'Robert', 1),
+(4, 'dwang888', 'asdf', 'David Wang', 1);
 
 -- --------------------------------------------------------
 
@@ -181,6 +180,15 @@ CREATE TABLE `workout_category` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
+-- Dumping data for table `workout_category`
+--
+
+INSERT INTO `workout_category` (`id`, `name`) VALUES
+(1, 'Beginner'),
+(2, 'Intermediate'),
+(3, 'Advanced');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -205,17 +213,10 @@ ALTER TABLE `item_category`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `location`
---
-ALTER TABLE `location`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `location_category`
 --
 ALTER TABLE `location_category`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `fk_to_locationID` (`locationID`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `preset`
@@ -235,7 +236,8 @@ ALTER TABLE `routine`
 -- Indexes for table `user`
 --
 ALTER TABLE `user`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_to_categoryID_4` (`categoryID`);
 
 --
 -- Indexes for table `user-preset`
@@ -284,16 +286,11 @@ ALTER TABLE `workout_category`
 -- AUTO_INCREMENT for table `item`
 --
 ALTER TABLE `item`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `item_category`
 --
 ALTER TABLE `item_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
---
--- AUTO_INCREMENT for table `location`
---
-ALTER TABLE `location`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `location_category`
@@ -304,7 +301,7 @@ ALTER TABLE `location_category`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT for table `workout`
 --
@@ -314,7 +311,7 @@ ALTER TABLE `workout`
 -- AUTO_INCREMENT for table `workout_category`
 --
 ALTER TABLE `workout_category`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- Constraints for dumped tables
 --
@@ -333,12 +330,6 @@ ALTER TABLE `item-item_category`
   ADD CONSTRAINT `fk_to_itemID_1` FOREIGN KEY (`itemID`) REFERENCES `item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `location_category`
---
-ALTER TABLE `location_category`
-  ADD CONSTRAINT `fk_to_locationID` FOREIGN KEY (`locationID`) REFERENCES `location` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
 -- Constraints for table `preset`
 --
 ALTER TABLE `preset`
@@ -349,6 +340,12 @@ ALTER TABLE `preset`
 --
 ALTER TABLE `routine`
   ADD CONSTRAINT `fk_to_workoutID_3` FOREIGN KEY (`workoutID`) REFERENCES `workout` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
+-- Constraints for table `user`
+--
+ALTER TABLE `user`
+  ADD CONSTRAINT `fk_to_categoryID_4` FOREIGN KEY (`categoryID`) REFERENCES `workout_category` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `user-preset`
