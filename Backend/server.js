@@ -64,10 +64,15 @@ function replaceContent(url, filePath, session, callback) {
                 db.getPresets(session.userID, resolve);
             }));
 
+            proms.push(new Promise(function (resolve) {
+                db.getRigor(resolve);
+            }));
+
             Promise.all(proms).then(function (arr) {
                 let serverData = JSON.stringify({
                     categories: arr[0],
                     presets: arr[1],
+                    rigor: arr[2],
                     tmpPreset: session.tmpPreset
                 });
                 let str = JSON.stringify(serverData);

@@ -152,6 +152,12 @@ class Database {
         this.conn.query('DELETE FROM `user-routine` WHERE routineID=?', routineID);
     }
 
+    getRigor(callback) {
+        this.conn.query('SELECT * FROM `workout_category`', function (err, results) {
+            callback(results);
+        });
+    }
+
     // getRoutines(userID, callback) {
     //     let $this = this;
     //     this.conn.query('SELECT * FROM `user-preset` WHERE userID=?', userID, function (err, results) {
