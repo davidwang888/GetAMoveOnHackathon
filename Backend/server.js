@@ -13,8 +13,7 @@ let db = new Database(config.mysql);
 
 let app = express();
 
-let noLogin = ['/index.html'];
-let pages = ['/index.html', '/page.html', 'profile.html', 'select_items.html', 'setup.html']
+let noLogin = [config.page.indexPage, config.page.errPage];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded());
@@ -50,19 +49,18 @@ function replaceContent(url, filePath, callback) {
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
 
-    if (url === '/') url = '/index.html';
-
-    if (req.session.userID >= 0) {
-        if (url == '/index.html') return res.redirect(config.sepChar + config.page.homePage)
-    } else {
-        if (pages.includes(url)) url = '/index.html';
-
-    }
+    if (url === config.sepChar) url = config.sepChar + config.page.indexPage;
 
     let reqPath = __dirname + config.sepChar + 'public' + url;
 
     if (!fs.existsSync(reqPath)) {
         return res.redirect(config.sepChar + config.page.errPage);
+    }
+
+    if (req.session.userID >= 0) {
+        if (url == config.sepChar + config.page.indexPage) return res.redirect(config.sepChar + config.page.homePage)
+    } else {
+        if (!noLogin.includes(url.substring(1))) return res.redirect(config.sepChar + config.page.indexPage);
     }
 
     if (url === '/utilities.js') {
