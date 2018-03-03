@@ -67,6 +67,11 @@ function replaceContent(url, filePath, callback) {
 }
 
 //setup routes
+app.get('/logout', function (req, res) {
+    req.session.userID = -1;
+    res.redirect(config.sepChar + config.page.indexPage);
+});
+
 app.get('*', function(req, res) {
     let url = req.url.split('?')[0];
 
